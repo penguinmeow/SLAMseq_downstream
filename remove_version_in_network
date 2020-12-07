@@ -1,0 +1,44 @@
+#In case your version number in tx_id or gene_id of network and analysis matrix doesn't match 
+
+tf <- get.SJAracne.network(network_file = analysis.par$tf.network.file)
+sig <- get.SJAracne.network(network_file = analysis.par$sig.network.file)
+
+#define a function to remove th version number in network
+#in tf[["network_dat"]][["source"]]
+remove.ver_network <- function(network){
+  nw <- network
+  source <- nw[["network_dat"]][["source"]]
+  source <- str_replace(source, pattern = '.[0-9]+$',replacement = '')
+  source.symbol <- nw[["network_dat"]][["source.symbol"]]
+  source.symbol <- str_replace(source.symbol, pattern = '.[0-9]+$',replacement = '')
+  target <- nw[["network_dat"]][["target"]]
+  target <- str_replace(target, pattern = '.[0-9]+$',replacement = '')
+  target.symbol <- nw[["network_dat"]][["target.symbol"]]
+  target.symbol <- str_replace(target.symbol, pattern = '.[0-9]+$',replacement = '')
+  nw[["network_dat"]][["source"]] <- source
+  nw[["network_dat"]][["source.symbol"]] <- source.symbol
+  nw[["network_dat"]][["target"]] <- target
+  nw[["network_dat"]][["target.symbol"]] <- target.symbol
+  #list name
+  list <- nw[["target_list"]]
+  name <- names(list)
+  name <- str_replace(name, pattern = '.[0-9]+$',replacement = '')
+  names(nw[["target_list"]]) <- name
+  # in target_list hub list
+  remove.ver <- function(hub){
+    tar <- hub[["target"]]
+    tar <- str_replace(tar ,pattern = '.[0-9]+$',replacement = '')
+    hub$target <- tar
+    rownames(hub) <- hub$target
+    return(hub)
+  }
+  nw[["target_list"]] <- lapply(nw[["target_list"]], remove.ver)
+  return(nw)
+}
+tf <- remove.ver_network(tf)
+sig <- remove.ver_network(sig)
+
+
+
+
+
