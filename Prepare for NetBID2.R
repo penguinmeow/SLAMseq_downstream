@@ -6,9 +6,8 @@ indir <- "/research/rgs01/project_space/yu3grp/Network_JY/yu3grp/LAP_Green/19055
 
 outdir <- "/research/rgs01/project_space/yu3grp/Network_JY/yu3grp/LAP_Green/190553SLAMseq/output/netbid" # dir for Summary, including Correlation and Master Tables
 samples <- read.table("sample.txt",col.names = "series")
-sample[,"directory"] <- paste0(indir,sample$series,"_R1/count")
-samples <- as.character(sample$series)
-directories <- as.character(sample$directory)
+samples <- as.character(samples$series)
+directories <- paste0(indir,samples,"_R1/count")
 head(directories)
 cat("The input information has been read!\n")
 
@@ -21,7 +20,7 @@ files <- lapply(directories, list.files, pattern=".tsv", full.names = TRUE)
 
 # create data frames
 name <- c("Chromosome", "Start", "End", "Name" ,"Length" ,"Strand", "ConversionRate", "ReadsCPM", "Tcontent", "CoverageOnTs" , "ConversionsOnTs", "ReadCount" , 
-          "TcReadCount", "multimapCount" , "ConvRateLower", "ConvRateUpper")
+          "TcReadCount", "multimapCount" , "ConvRateLower", "ConvRateUpper") calc
 master_table <- lapply(files[1:length(samples)], function(x) read.table(x,header = TRUE, col.names = name))
 class(master_table)
 names(master_table) <- samples
